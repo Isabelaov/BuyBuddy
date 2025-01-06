@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { IIncomingItem, IItem } from '../interfaces/item';
 
 type ItemsType = {
@@ -10,20 +10,22 @@ export const useItems = () => {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<ItemsType>({});
 
-  // useEffect(() => {
-  //   loadItems();
-  // });
+  useEffect(() => {
+    loadItems();
+  }, []);
 
   const createItem = async ({ ...data }: IIncomingItem) => {
     try {
       setLoading(true);
       const newItem = { ...data, id: Date.now(), bought: false };
-
-      setItems(prevItems => ({
-        ...prevItems,
+      const updatedItems = {
+        ...items,
         [newItem.id]: newItem,
-      }));
-      await saveItems();
+      };
+
+      setItems(updatedItems);
+
+      await saveItems(updatedItems);
     } catch (error) {
       console.error(error);
     } finally {
@@ -31,9 +33,11 @@ export const useItems = () => {
     }
   };
 
-  const saveItems = async () => {
+  const saveItems = async (values: ItemsType) => {
     try {
-      await AsyncStorage.setItem('@items', JSON.stringify(items));
+      console.log({ values });
+
+      await AsyncStorage.setItem('@items', JSON.stringify(values));
     } catch (error) {
       console.error('failed to save: ', error);
     }
@@ -66,5 +70,13 @@ export const useItems = () => {
     console.log(id);
   };
 
-  return { createItem, loadItems, getOneItem, updateItem, deleteItem, loading };
+  return {
+    createItem,
+    loadItems,
+    getOneItem,
+    updateItem,
+    deleteItem,
+    loading,
+    items,
+  };
 };

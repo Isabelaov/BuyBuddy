@@ -3,7 +3,12 @@ import React, { useState } from 'react';
 import { Picker } from '@react-native-picker/picker';
 import { Formik } from 'formik';
 import { Button, Loading, Input } from '.';
-import { ContainerStyles, TextStyles } from '../assets/styles';
+import {
+  ContainerStyles,
+  ModalStyles,
+  PickerStyles,
+  TextStyles,
+} from '../assets/styles';
 import { useItems } from '../hooks/useItems';
 import { createItemSchema } from '../validation/createItem.validation';
 import { CategoriesEnum } from '../enums/categories';
@@ -39,8 +44,8 @@ export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
         setVisible(false);
         return;
       }}>
-      <View style={ContainerStyles.modalContainer}>
-        <View style={ContainerStyles.modalContent}>
+      <View style={ModalStyles.modalContainer}>
+        <View style={ModalStyles.modalContent}>
           {loading || submitting ? (
             <Loading />
           ) : (
@@ -80,23 +85,23 @@ export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
                       error={touched.quantity ? errors.quantity : undefined}
                     />
 
-                    <View style={ContainerStyles.pickerContainer}>
+                    <View style={PickerStyles.pickerContainer}>
                       <Picker
                         onBlur={handleBlur('quantity')}
                         mode="dropdown"
                         dropdownIconColor={colors.primary}
-                        style={ContainerStyles.picker}
+                        style={PickerStyles.picker}
                         selectedValue={values.category}
                         onValueChange={handleChange('category')}>
                         <Picker.Item
-                          style={ContainerStyles.pickerItem}
+                          style={PickerStyles.pickerItem}
                           key={'uwu'}
                           label={'Select category'}
                         />
 
                         {Object.values(CategoriesEnum).map(category => (
                           <Picker.Item
-                            style={ContainerStyles.pickerItem}
+                            style={PickerStyles.pickerItem}
                             key={category}
                             label={category}
                             value={category}
