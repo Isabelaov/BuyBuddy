@@ -1,6 +1,26 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+project.ext.vectoricons = [
+    iconFontNames: [ 
+        'MaterialIcons.ttf', 
+        'FontAwesome.ttf', 
+        'Entypo.ttf', 
+        'EvilIcons.ttf', 
+        'Feather.ttf', 
+        'FontAwesome6.ttf', 
+        'FontAwesome5.ttf', 
+        'Fontisto.ttf', 
+        'FontAwesome5Brands.ttf', 
+        'Foundation.ttf', 
+        'Ionicons.ttf', 
+        'MaterialCommunityIcons.ttf',  
+        'Octicons.ttf', 
+        'SimpleLineIcons.ttf', 
+        'Zocial.ttf', 
+    ]
+]
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -114,6 +134,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-splash-screen')
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
