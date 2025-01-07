@@ -2,9 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { RootStackParams } from './rootStack';
-import { HomeScreen } from '../screens/HomeScreen';
-import { CreateItemScreen } from '../components/CreateItemModal';
-import { createScreenOptions } from './screenOptions';
+import { ListScreen } from '../screens/ListScreen';
 
 const Stack = createNativeStackNavigator<RootStackParams>();
 
@@ -13,8 +11,8 @@ export const Navigator = () => {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
-          name="Home"
-          component={HomeScreen}
+          name="List"
+          component={ListScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

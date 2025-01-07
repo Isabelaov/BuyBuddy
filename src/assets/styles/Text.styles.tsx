@@ -31,4 +31,8 @@ export const TextStyles = StyleSheet.create({
     textAlign: 'center',
     color: colors.secondary,
   },
+  normal: {
+    color: 'black',
+    fontSize: 20,
+  },
 });

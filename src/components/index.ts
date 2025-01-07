@@ -3,5 +3,7 @@ export * from './Icon';
 export * from './AddButton';
 export * from './Loading';
 export * from './Button';
-export * from './CreateItemModal';
+export * from './HandleItemModal';
 export * from './Input';
+export * from './CategoriesPicker';
+export * from './Anchor';
