@@ -35,7 +35,7 @@ export const useItemModal = ({
       setSubmitting(false);
       setVisible(false);
       setItemId(undefined);
-      navigation.replace('Home');
+      navigation.replace('List');
     }
   };
 
@@ -43,7 +43,7 @@ export const useItemModal = ({
     try {
       deleteItem(itemId!);
       setItemId(undefined);
-      navigation.replace('Home');
+      navigation.replace('List');
     } catch (error: any) {
       Alert.alert('Error deleting item');
     }
