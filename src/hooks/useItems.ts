@@ -62,7 +62,7 @@ export const useItems = () => {
     return items[id] ? items[id] : null;
   };
 
-  const updateItem = (id: number, data: Partial<IItem>) => {
+  const updateItem = async (id: number, data: Partial<IItem>) => {
     setLoading(true);
     try {
       console.log({ data });
@@ -71,9 +71,10 @@ export const useItems = () => {
         ...items,
         [id]: { ...items[id], ...data },
       };
-      console.log({ updated: updatedItems[id] });
+      console.log({ updatedItems, updated: updatedItems[id] });
 
       setItems(updatedItems);
+      await saveItems(updatedItems);
     } catch (error: any) {
       console.error(error);
     } finally {
@@ -81,8 +82,21 @@ export const useItems = () => {
     }
   };
 
-  const deleteItem = (id: number) => {
-    console.log(id);
+  const deleteItem = async (id: number) => {
+    try {
+      setLoading(true);
+      const {
+        [id]: {},
+        ...filtered
+      } = items;
+
+      setItems(filtered);
+      await saveItems(filtered);
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {

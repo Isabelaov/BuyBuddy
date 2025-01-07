@@ -1,63 +1,26 @@
-import { Alert, Modal, ModalProps, Text, View } from 'react-native';
-import React, { useState } from 'react';
+import { Modal, Text, View } from 'react-native';
+import React from 'react';
 import { Formik } from 'formik';
 import { Button, Loading, Input, CategoriesPicker, Anchor } from '.';
 import { ContainerStyles, ModalStyles, TextStyles } from '../assets/styles';
-import { useItems } from '../hooks/useItems';
 import { createItemSchema } from '../validation/createItem.validation';
-import { IIncomingItem } from '../interfaces/item';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParams } from '../navigation/rootStack';
+import { useItemModal } from '../hooks/useItemModal';
+import { ItemModalProps } from '../interfaces/itemModalProps';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParams, 'Home'>;
-
-type Props = ModalProps & {
-  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  navigation: NavigationProp;
-  id?: number;
-};
-
-export const CreateItemModal: React.FC<Props> = ({
+export const CreateItemModal: React.FC<ItemModalProps> = ({
   visible,
   setVisible,
   navigation,
-  id,
+  itemId,
+  setItemId,
 }) => {
-  const [submitting, setSubmitting] = useState(false);
-  const { loading, createItem, items, updateItem, deleteItem } = useItems();
-
-  const initialValues: IIncomingItem = id
-    ? { ...items[id] }
-    : {
-        category: undefined,
-        name: '',
-        quantity: '',
-      };
-
-  const handle = async (values: IIncomingItem) => {
-    setSubmitting(true);
-    try {
-      if (id) {
-        updateItem(id, values);
-      } else {
-        await createItem(values);
-      }
-    } catch (error: any) {
-      Alert.alert('Error handling item', error);
-    } finally {
-      setSubmitting(false);
-      setVisible(false);
-      navigation.replace('Home');
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      deleteItem(id!);
-    } catch (error: any) {
-      Alert.alert('Error deleting item');
-    }
-  };
+  const { submitting, loading, initialValues, handle, handleDelete } =
+    useItemModal({
+      setVisible,
+      navigation,
+      itemId,
+      setItemId,
+    });
 
   return (
     <Modal
@@ -74,7 +37,9 @@ export const CreateItemModal: React.FC<Props> = ({
             <Loading />
           ) : (
             <>
-              <Text style={TextStyles.title}>{id ? 'Update' : 'Add'} Item</Text>
+              <Text style={TextStyles.title}>
+                {itemId ? 'Update' : 'Add'} Item
+              </Text>
               <Formik
                 onSubmit={handle}
                 validationSchema={createItemSchema}
@@ -114,16 +79,25 @@ export const CreateItemModal: React.FC<Props> = ({
                     <View style={ContainerStyles.bySide}>
                       <Button
                         onPress={() => handleSubmit()}
-                        backgroundPrimary={false}
                         text="Save"
                         disabled={submitting}
                       />
+
+                      {itemId ? (
+                        <Button
+                          onPress={() => handleDelete()}
+                          backgroundPrimary={false}
+                          text="Delete"
+                          disabled={submitting}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </View>
 
                     <Anchor
                       text="Cancel"
                       onPress={() => {
-                        handleDelete();
                         setVisible(false);
                         return;
                       }}

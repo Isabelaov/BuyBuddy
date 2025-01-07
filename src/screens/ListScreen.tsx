@@ -1,35 +1,24 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
+import CheckBox from '@react-native-community/checkbox';
 import { ContainerStyles, ListStyles, TextStyles } from '../assets/styles';
 import { AddButton, CreateItemModal, Loading } from '../components';
 import { colors } from '../assets/colors';
-import { ButtonStyles } from '../assets/styles/Button.styles';
-import { RootStackParams } from '../navigation/rootStack';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useItems } from '../hooks/useItems';
-import { IItem } from '../interfaces/item';
-import { ModalStyles } from '../assets/styles/Modal.styles';
-import CheckBox from '@react-native-community/checkbox';
+import { ButtonStyles, ModalStyles } from '../assets/styles';
+import { IItem, IListProps } from '../interfaces';
+import { useList } from '../hooks';
 
-type NavigationProp = NativeStackNavigationProp<RootStackParams, 'Home'>;
-
-interface Props {
-  navigation: NavigationProp;
-}
-
-export const HomeScreen = ({ navigation }: Props) => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selected, setSelected] = useState<{ [key: number]: boolean }>({});
-  const { loading, items, updateItem } = useItems();
-  const data = Object.values(items);
-
-  const handleCheckboxChange = (id: number) => {
-    setSelected(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-    updateItem(id, { bought: selected[id] });
-  };
+export const ListScreen = ({ navigation }: IListProps) => {
+  const {
+    modalVisible,
+    setModalVisible,
+    itemId,
+    setItemId,
+    loading,
+    data,
+    handleCheckboxChange,
+    selected,
+  } = useList();
 
   if (loading) {
     return (
@@ -47,7 +36,12 @@ export const HomeScreen = ({ navigation }: Props) => {
         style={ListStyles().list}
         data={data}
         renderItem={({ item }: { item: IItem }) => (
-          <TouchableOpacity style={ListStyles().item}>
+          <TouchableOpacity
+            onPress={() => {
+              setItemId(item.id);
+              setModalVisible(true);
+            }}
+            style={ListStyles().item}>
             <View style={ListStyles('flex-start').itemBox}>
               <CheckBox
                 value={!selected[item.id]}
@@ -75,6 +69,8 @@ export const HomeScreen = ({ navigation }: Props) => {
         navigation={navigation}
         visible={modalVisible}
         setVisible={setModalVisible}
+        itemId={itemId}
+        setItemId={setItemId}
       />
     </View>
   );
