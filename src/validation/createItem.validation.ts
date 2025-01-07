@@ -3,7 +3,7 @@ import { CategoriesEnum } from '../enums/categories';
 
 export const createItemSchema = Yup.object().shape({
   name: Yup.string().required().nonNullable().min(1),
-  quantity: Yup.number().required().positive().moreThan(1),
+  quantity: Yup.number().required().positive().moreThan(1).integer(),
   category: Yup.mixed<CategoriesEnum>()
     .oneOf(Object.values(CategoriesEnum))
     .nullable(),
