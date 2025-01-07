@@ -6,10 +6,7 @@ export interface IIncomingItem {
   quantity: number | string;
 }
 
-export interface IItem {
+export interface IItem extends IIncomingItem {
   id: number;
   bought: boolean;
-  category?: CategoriesEnum;
-  name: string;
-  quantity: number;
 }

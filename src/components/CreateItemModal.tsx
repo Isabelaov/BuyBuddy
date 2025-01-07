@@ -1,37 +1,61 @@
 import { Alert, Modal, ModalProps, Text, View } from 'react-native';
 import React, { useState } from 'react';
-import { Picker } from '@react-native-picker/picker';
 import { Formik } from 'formik';
-import { Button, Loading, Input } from '.';
-import {
-  ContainerStyles,
-  ModalStyles,
-  PickerStyles,
-  TextStyles,
-} from '../assets/styles';
+import { Button, Loading, Input, CategoriesPicker, Anchor } from '.';
+import { ContainerStyles, ModalStyles, TextStyles } from '../assets/styles';
 import { useItems } from '../hooks/useItems';
 import { createItemSchema } from '../validation/createItem.validation';
-import { CategoriesEnum } from '../enums/categories';
-import { colors } from '../assets/colors';
 import { IIncomingItem } from '../interfaces/item';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParams } from '../navigation/rootStack';
+
+type NavigationProp = NativeStackNavigationProp<RootStackParams, 'Home'>;
 
 type Props = ModalProps & {
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  navigation: NavigationProp;
+  id?: number;
 };
 
-export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
+export const CreateItemModal: React.FC<Props> = ({
+  visible,
+  setVisible,
+  navigation,
+  id,
+}) => {
   const [submitting, setSubmitting] = useState(false);
-  const { loading, createItem } = useItems();
+  const { loading, createItem, items, updateItem, deleteItem } = useItems();
 
-  const handleCreate = async (values: IIncomingItem) => {
+  const initialValues: IIncomingItem = id
+    ? { ...items[id] }
+    : {
+        category: undefined,
+        name: '',
+        quantity: '',
+      };
+
+  const handle = async (values: IIncomingItem) => {
     setSubmitting(true);
     try {
-      await createItem(values);
+      if (id) {
+        updateItem(id, values);
+      } else {
+        await createItem(values);
+      }
     } catch (error: any) {
-      Alert.alert('Error creating item', error);
+      Alert.alert('Error handling item', error);
     } finally {
       setSubmitting(false);
       setVisible(false);
+      navigation.replace('Home');
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      deleteItem(id!);
+    } catch (error: any) {
+      Alert.alert('Error deleting item');
     }
   };
 
@@ -50,15 +74,11 @@ export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
             <Loading />
           ) : (
             <>
-              <Text style={TextStyles.title}>Add Item</Text>
+              <Text style={TextStyles.title}>{id ? 'Update' : 'Add'} Item</Text>
               <Formik
-                onSubmit={handleCreate}
+                onSubmit={handle}
                 validationSchema={createItemSchema}
-                initialValues={{
-                  category: undefined,
-                  name: '',
-                  quantity: '',
-                }}>
+                initialValues={initialValues}>
                 {({
                   handleChange,
                   handleBlur,
@@ -85,30 +105,11 @@ export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
                       error={touched.quantity ? errors.quantity : undefined}
                     />
 
-                    <View style={PickerStyles.pickerContainer}>
-                      <Picker
-                        onBlur={handleBlur('quantity')}
-                        mode="dropdown"
-                        dropdownIconColor={colors.primary}
-                        style={PickerStyles.picker}
-                        selectedValue={values.category}
-                        onValueChange={handleChange('category')}>
-                        <Picker.Item
-                          style={PickerStyles.pickerItem}
-                          key={'uwu'}
-                          label={'Select category'}
-                        />
-
-                        {Object.values(CategoriesEnum).map(category => (
-                          <Picker.Item
-                            style={PickerStyles.pickerItem}
-                            key={category}
-                            label={category}
-                            value={category}
-                          />
-                        ))}
-                      </Picker>
-                    </View>
+                    <CategoriesPicker
+                      onBlur={handleBlur('quantity')}
+                      selectedValue={values.category}
+                      onValueChange={handleChange('category')}
+                    />
 
                     <View style={ContainerStyles.bySide}>
                       <Button
@@ -117,15 +118,16 @@ export const CreateItemModal: React.FC<Props> = ({ visible, setVisible }) => {
                         text="Save"
                         disabled={submitting}
                       />
-
-                      <Button
-                        text="Cancel"
-                        onPress={() => {
-                          setVisible(false);
-                          return;
-                        }}
-                      />
                     </View>
+
+                    <Anchor
+                      text="Cancel"
+                      onPress={() => {
+                        handleDelete();
+                        setVisible(false);
+                        return;
+                      }}
+                    />
                   </>
                 )}
               </Formik>

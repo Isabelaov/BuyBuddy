@@ -5,3 +5,5 @@ export * from './Loading';
 export * from './Button';
 export * from './CreateItemModal';
 export * from './Input';
+export * from './CategoriesPicker';
+export * from './Anchor';

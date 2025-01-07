@@ -35,9 +35,8 @@ export const useItems = () => {
 
   const saveItems = async (values: ItemsType) => {
     try {
-      console.log({ values });
-
       await AsyncStorage.setItem('@items', JSON.stringify(values));
+      await loadItems();
     } catch (error) {
       console.error('failed to save: ', error);
     }
@@ -49,7 +48,8 @@ export const useItems = () => {
       const res = await AsyncStorage.getItem('@items');
 
       if (res) {
-        setItems(JSON.parse(res));
+        const parsed = JSON.parse(res);
+        setItems(parsed);
       }
     } catch (error) {
       console.error(`Unable to parse data: ${error}`);
@@ -62,8 +62,23 @@ export const useItems = () => {
     return items[id] ? items[id] : null;
   };
 
-  const updateItem = (id: number) => {
-    console.log(id);
+  const updateItem = (id: number, data: Partial<IItem>) => {
+    setLoading(true);
+    try {
+      console.log({ data });
+
+      const updatedItems: ItemsType = {
+        ...items,
+        [id]: { ...items[id], ...data },
+      };
+      console.log({ updated: updatedItems[id] });
+
+      setItems(updatedItems);
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteItem = (id: number) => {
