@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { IIncomingItem } from '../interfaces/item';
 import { useItems } from './useItems';
 import { ItemModalProps } from '../interfaces/itemModalProps';
+import { CategoriesEnum } from '../enums/categories';
 
 export const useItemModal = ({
   setVisible,
@@ -27,7 +28,10 @@ export const useItemModal = ({
       if (itemId && itemId !== 0) {
         updateItem(itemId, values);
       } else {
-        await createItem(values);
+        await createItem({
+          category: values.category || CategoriesEnum.other,
+          ...values,
+        });
       }
     } catch (error: any) {
       Alert.alert('Error handling item', error);
