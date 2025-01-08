@@ -8,4 +8,5 @@ export enum CategoriesEnum {
   beverages = 'Beverages',
   householdEssentials = 'Household essentials',
   personalCare = 'Personal care',
+  other = 'Other',
 }

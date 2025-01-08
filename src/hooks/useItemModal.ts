@@ -25,9 +25,11 @@ export const useItemModal = ({
     setSubmitting(true);
     try {
       if (itemId && itemId !== 0) {
-        updateItem(itemId, values);
+        await updateItem(itemId, values);
       } else {
-        await createItem(values);
+        await createItem({
+          ...values,
+        });
       }
     } catch (error: any) {
       Alert.alert('Error handling item', error);

@@ -4,8 +4,9 @@ import { colors } from '../colors';
 export const TextStyles = StyleSheet.create({
   error: {
     margin: 5,
-    fontSize: 15,
+    fontSize: 20,
     color: '#b24242',
+    textAlign: 'center',
   },
   title: {
     fontSize: 24,
@@ -34,5 +35,15 @@ export const TextStyles = StyleSheet.create({
   normal: {
     color: 'black',
     fontSize: 20,
+  },
+  graph: {
+    color: colors.secondary,
+    fontSize: 20,
+    textAlign: 'center',
+  },
+  graphLabel: {
+    color: 'black',
+    fontSize: 17,
+    marginHorizontal: 5,
   },
 });

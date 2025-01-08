@@ -5,3 +5,4 @@ export * from './Container.styles';
 export * from './Modal.styles';
 export * from './Picker.styles';
 export * from './List.styles';
+export * from './Indicator.styles';
