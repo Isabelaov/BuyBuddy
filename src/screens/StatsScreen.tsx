@@ -1,8 +1,8 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
-import { ContainerStyles, IndicatorStyles, TextStyles } from '../assets/styles';
-import { CenterGraph, Loading } from '../components';
+import { ContainerStyles, TextStyles } from '../assets/styles';
+import { CenterGraph, Indicator, Loading } from '../components';
 import { useItems, useStats } from '../hooks';
 
 export const StatsScreen = () => {
@@ -29,7 +29,7 @@ export const StatsScreen = () => {
             centerLabelComponent={() => CenterGraph(totalPercentage)}
           />
           {data.map((val, index) => (
-            <Item
+            <Indicator
               categories={Object.keys(categories!.filtered[index])}
               key={index}
               all={Object.values(categories!.all[index])}
@@ -40,33 +40,6 @@ export const StatsScreen = () => {
           ))}
         </View>
       )}
-    </View>
-  );
-};
-
-const Item = ({
-  color,
-  value,
-  index,
-  all,
-  categories,
-}: {
-  color: string;
-  value: number;
-  all: number[];
-  index: number;
-  categories: string[];
-}) => {
-  console.log(all[index], all, index);
-  console.log(categories);
-
-  return (
-    <View style={IndicatorStyles(color).container}>
-      <View style={IndicatorStyles(color).indicator} />
-      <Text style={TextStyles.graphLabel}>{categories}</Text>
-      <Text style={TextStyles.graphLabel}>
-        {value} / {all}
-      </Text>
     </View>
   );
 };

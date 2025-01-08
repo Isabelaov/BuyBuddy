@@ -9,3 +9,4 @@ export * from './CategoriesPicker';
 export * from './Anchor';
 export * from './CenterGraph';
 export * from './StatsButton';
+export * from './Indicator';
