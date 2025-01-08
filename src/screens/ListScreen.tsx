@@ -22,7 +22,6 @@ export const ListScreen = ({ navigation }: IListProps) => {
     loading,
     data,
     handleCheckboxChange,
-    selected,
   } = useList();
 
   if (loading) {

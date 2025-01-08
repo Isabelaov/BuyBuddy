@@ -41,4 +41,9 @@ export const TextStyles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
   },
+  graphLabel: {
+    color: 'black',
+    fontSize: 17,
+    marginHorizontal: 5,
+  },
 });
