@@ -72,7 +72,10 @@ export const ListScreen = ({ navigation }: IListProps) => {
       <AddButton
         color={colors.primary}
         style={ButtonStyles('rgba(0,0,0,0.1)').addButton}
-        onPress={() => setModalVisible(true)}
+        onPress={() => {
+          setModalVisible(true);
+          setItemId(undefined);
+        }}
       />
 
       <CreateItemModal
