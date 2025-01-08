@@ -35,7 +35,6 @@ export const StatsScreen = () => {
               all={Object.values(categories!.all[index])}
               value={val.value}
               color={val.color!}
-              index={index}
             />
           ))}
         </View>

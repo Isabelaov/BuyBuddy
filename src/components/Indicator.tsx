@@ -5,19 +5,14 @@ import { IndicatorStyles, TextStyles } from '../assets/styles';
 export const Indicator = ({
   color,
   value,
-  index,
   all,
   categories,
 }: {
   color: string;
   value: number;
   all: number[];
-  index: number;
   categories: string[];
 }) => {
-  console.log(all[index], all, index);
-  console.log(categories);
-
   return (
     <View style={IndicatorStyles(color).container}>
       <View style={IndicatorStyles(color).indicator} />
