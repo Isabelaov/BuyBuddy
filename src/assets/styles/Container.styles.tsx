@@ -5,6 +5,11 @@ export const ContainerStyles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
+  chartContainer: {
+    margin: 10,
+    display: 'flex',
+    alignItems: 'center',
+  },
   formContainer: {
     display: 'flex',
     flex: 1,
@@ -19,5 +24,11 @@ export const ContainerStyles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'space-between',
+    width: '100%',
+  },
+  buttonEnd: {
+    position: 'absolute',
+    right: 5,
+    top: 20,
   },
 });

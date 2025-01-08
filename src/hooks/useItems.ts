@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { IIncomingItem, IItem } from '../interfaces/item';
+import { CategoriesEnum } from '../enums/categories';
 
 type ItemsType = {
   [key: string]: IItem;
@@ -14,12 +15,32 @@ export const useItems = () => {
     loadItems();
   }, []);
 
+  const getCategoriesVals = () => {
+    return Object.fromEntries(
+      Object.values(CategoriesEnum).map(key => [key, getCategoryCount(key)]),
+    );
+  };
+
+  const getCategoryCount = (category: CategoriesEnum) => {
+    let count = 0;
+    Object.values(items).map(val => {
+      val.category === category && val.bought ? count++ : null;
+    });
+    return count;
+  };
+
   const createItem = async ({ ...data }: IIncomingItem) => {
     try {
       setLoading(true);
-      const newItem = { ...data, id: Date.now(), bought: false };
+      const newItem = {
+        ...data,
+        id: Date.now(),
+        bought: false,
+        category: data.category ? data.category : CategoriesEnum.other,
+      };
       const updatedItems = {
         ...items,
+
         [newItem.id]: newItem,
       };
 
@@ -65,13 +86,10 @@ export const useItems = () => {
   const updateItem = async (id: number, data: Partial<IItem>) => {
     setLoading(true);
     try {
-      console.log({ data });
-
       const updatedItems: ItemsType = {
         ...items,
         [id]: { ...items[id], ...data },
       };
-      console.log({ updatedItems, updated: updatedItems[id] });
 
       setItems(updatedItems);
       await saveItems(updatedItems);
@@ -107,5 +125,6 @@ export const useItems = () => {
     deleteItem,
     loading,
     items,
+    getCategoriesVals,
   };
 };

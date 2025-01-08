@@ -2,7 +2,12 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React from 'react';
 import CheckBox from '@react-native-community/checkbox';
 import { ContainerStyles, ListStyles, TextStyles } from '../assets/styles';
-import { AddButton, CreateItemModal, Loading } from '../components';
+import {
+  AddButton,
+  CreateItemModal,
+  Loading,
+  StatsButton,
+} from '../components';
 import { colors } from '../assets/colors';
 import { ButtonStyles, ModalStyles } from '../assets/styles';
 import { IItem, IListProps } from '../interfaces';
@@ -30,7 +35,13 @@ export const ListScreen = ({ navigation }: IListProps) => {
 
   return (
     <View style={ModalStyles.containerWithModal}>
-      <Text style={TextStyles.title}>Items</Text>
+      <View style={ContainerStyles.bySide}>
+        <Text style={TextStyles.title}>Items</Text>
+        <StatsButton
+          style={ContainerStyles.buttonEnd}
+          onPress={() => navigation.navigate('Stats')}
+        />
+      </View>
 
       <FlatList
         style={ListStyles().list}
@@ -44,7 +55,7 @@ export const ListScreen = ({ navigation }: IListProps) => {
             style={ListStyles().item}>
             <View style={ListStyles('flex-start').itemBox}>
               <CheckBox
-                value={!selected[item.id]}
+                value={item.bought || false}
                 onValueChange={() => handleCheckboxChange(item.id)}
                 tintColors={{ true: colors.primary, false: colors.secondary }}
               />

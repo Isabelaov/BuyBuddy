@@ -3,7 +3,6 @@ import { Alert } from 'react-native';
 import { IIncomingItem } from '../interfaces/item';
 import { useItems } from './useItems';
 import { ItemModalProps } from '../interfaces/itemModalProps';
-import { CategoriesEnum } from '../enums/categories';
 
 export const useItemModal = ({
   setVisible,
@@ -26,10 +25,9 @@ export const useItemModal = ({
     setSubmitting(true);
     try {
       if (itemId && itemId !== 0) {
-        updateItem(itemId, values);
+        await updateItem(itemId, values);
       } else {
         await createItem({
-          category: values.category || CategoriesEnum.other,
           ...values,
         });
       }
