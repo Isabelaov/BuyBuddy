@@ -3,14 +3,11 @@ import React from 'react';
 import { PieChart } from 'react-native-gifted-charts';
 import { ContainerStyles, IndicatorStyles, TextStyles } from '../assets/styles';
 import { CenterGraph, Loading } from '../components';
-import { StatsProps } from '../interfaces';
 import { useItems, useStats } from '../hooks';
 
-export const StatsScreen = ({ navigation }: StatsProps) => {
-  const { data, totalPercentage, filteredCategories } = useStats();
+export const StatsScreen = () => {
+  const { data, totalPercentage, categories } = useStats();
   const { loading } = useItems();
-
-  console.log({ filteredCategories });
 
   if (loading) {
     return <Loading />;
@@ -20,7 +17,7 @@ export const StatsScreen = ({ navigation }: StatsProps) => {
     <View style={ContainerStyles.mainContainer}>
       <Text style={TextStyles.title}>List Stats</Text>
 
-      {data.length === 0 ? (
+      {data.length === 0 && categories ? (
         <Text style={TextStyles.error}>No data available</Text>
       ) : (
         <View style={ContainerStyles.chartContainer}>
@@ -33,8 +30,9 @@ export const StatsScreen = ({ navigation }: StatsProps) => {
           />
           {data.map((val, index) => (
             <Item
+              categories={Object.keys(categories!.filtered[index])}
               key={index}
-              categories={filteredCategories}
+              all={Object.values(categories!.all[index])}
               value={val.value}
               color={val.color!}
               index={index}
@@ -50,18 +48,25 @@ const Item = ({
   color,
   value,
   index,
+  all,
   categories,
 }: {
   color: string;
   value: number;
+  all: number[];
   index: number;
   categories: string[];
 }) => {
+  console.log(all[index], all, index);
+  console.log(categories);
+
   return (
     <View style={IndicatorStyles(color).container}>
       <View style={IndicatorStyles(color).indicator} />
-      <Text style={TextStyles.graphLabel}>{categories[index]}/</Text>
-      <Text style={TextStyles.graphLabel}>{value}</Text>
+      <Text style={TextStyles.graphLabel}>{categories}</Text>
+      <Text style={TextStyles.graphLabel}>
+        {value} / {all}
+      </Text>
     </View>
   );
 };

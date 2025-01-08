@@ -15,17 +15,27 @@ export const useItems = () => {
     loadItems();
   }, []);
 
-  const getCategoriesVals = () => {
+  const getAllCategories = (isAll: boolean) => {
     return Object.fromEntries(
-      Object.values(CategoriesEnum).map(key => [key, getCategoryCount(key)]),
+      Object.values(CategoriesEnum).map(key => [
+        key,
+        getTotalCount(key, isAll),
+      ]),
     );
   };
 
-  const getCategoryCount = (category: CategoriesEnum) => {
+  const getTotalCount = (category: CategoriesEnum, isAll: boolean) => {
     let count = 0;
+
     Object.values(items).map(val => {
-      val.category === category && val.bought ? count++ : null;
+      if (
+        (isAll && val.category === category) ||
+        (!isAll && val.category === category && val.bought)
+      ) {
+        count++;
+      }
     });
+
     return count;
   };
 
@@ -125,6 +135,6 @@ export const useItems = () => {
     deleteItem,
     loading,
     items,
-    getCategoriesVals,
+    getAllCategories,
   };
 };

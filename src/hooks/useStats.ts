@@ -6,23 +6,48 @@ import { CategoriesEnum } from '../enums/categories';
 
 export const useStats = () => {
   const [data, setData] = useState<pieDataItem[]>([]);
-  const { items, getCategoriesVals } = useItems();
+  const { items, getAllCategories } = useItems();
   const [totalPercentage, setTotalPercentage] = useState(0);
   const categoriesArr: [] = Object.values(CategoriesEnum) as [];
-  const [filteredCategories, setFilteredCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<{
+    all: { [key: string]: number }[];
+    filtered: { [key: string]: number }[];
+  }>();
 
   useEffect(() => {
-    const categoriesValues = Object.values(getCategoriesVals());
+    const categoriesValues = Object.values(getAllCategories(false));
+    const allCategoriesValues = Object.values(getAllCategories(true));
     const filteredValues = categoriesValues.filter(item => item !== 0);
+    const filterAllValues = allCategoriesValues.filter(item => item !== 0);
 
     const filterCategoriesArr = categoriesArr.filter(
       (c, i) => categoriesValues[i] > 0,
     );
+    const filteredAllCategoriesArr = categoriesArr.filter(
+      (c, i) => allCategoriesValues[i] > 0,
+    );
+
+    const mappedFiltered = filterCategoriesArr.map((c, i) => ({
+      [c]: filteredValues[i],
+    }));
+    const mappedAll = filteredAllCategoriesArr.map((c, i) => ({
+      [c]: filterAllValues[i],
+    }));
 
     if (
-      JSON.stringify(filterCategoriesArr) !== JSON.stringify(filteredCategories)
+      JSON.stringify(mappedFiltered) !== JSON.stringify(categories?.filtered)
     ) {
-      setFilteredCategories(filterCategoriesArr);
+      setCategories(prev => ({
+        all: prev?.all || [],
+        filtered: mappedFiltered,
+      }));
+    }
+
+    if (JSON.stringify(mappedAll) !== JSON.stringify(categories?.all)) {
+      setCategories(prev => ({
+        filtered: prev?.filtered || [],
+        all: mappedAll,
+      }));
     }
 
     const baseData: pieDataItem[] = filteredValues.map((value, index) => ({
@@ -37,7 +62,7 @@ export const useStats = () => {
     if (JSON.stringify(baseData) !== JSON.stringify(data)) {
       setData(baseData);
     }
-  }, [items, getCategoriesVals, data, categoriesArr, filteredCategories]);
+  }, [items, data, categoriesArr, getAllCategories, categories]);
 
-  return { data, totalPercentage, filteredCategories };
+  return { data, totalPercentage, categories };
 };
